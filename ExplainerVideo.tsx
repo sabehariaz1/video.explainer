@@ -10,7 +10,7 @@ import {
   spring,
   useCurrentFrame,
 } from 'remotion';
-import music from './music.mp3';
+import voiceover from './voiceover.mp3';
 
 /* -------------------------------------------------------------------------- */
 /*  Global settings                                                           */
@@ -22,13 +22,13 @@ const HEIGHT = 1080;
 
 // Scene lengths in frames. They add up to exactly 3,600 frames = 2:00 at 30 fps.
 const D = {
-  intro: 360, // 12 s
-  gauge: 420, // 14 s
-  body: 480, // 16 s
-  risks: 900, // 30 s
-  tests: 600, // 20 s
-  good: 420, // 14 s
-  close: 420, // 14 s
+  intro: 370, // 12.3 s
+  gauge: 520, // 17.3 s
+  body: 460, // 15.3 s
+  risks: 660, // 22 s
+  tests: 540, // 18 s
+  good: 460, // 15.3 s
+  close: 590, // 19.7 s
 } as const;
 
 const TOTAL_FRAMES = D.intro + D.gauge + D.body + D.risks + D.tests + D.good + D.close; // 3600
@@ -466,9 +466,9 @@ const IntroScene: React.FC = () => {
           const y = 300 + r * 150;
           const p = pop(f, 22 + i * 4);
           const isFlag = flagged.includes(i);
-          const hl = isFlag ? prog(f, 135, 24) : 0;
+          const hl = isFlag ? prog(f, 120, 24) : 0;
           const color = interpolateColors(hl, [0, 1], [C.navy, C.red]);
-          const badge = isFlag ? pop(f, 170 + (i === 7 ? 0 : 14)) : 0;
+          const badge = isFlag ? pop(f, 150 + (i === 7 ? 0 : 14)) : 0;
           return (
             <g key={i}>
               <Person x={x} y={y} color={color} s={Math.max(0, p) * (1 + hl * 0.08)} />
@@ -500,8 +500,8 @@ const IntroScene: React.FC = () => {
             lineHeight: 1,
             whiteSpace: 'nowrap',
             color: C.red,
-            opacity: prog(f, 150, 24),
-            transform: `scale(${0.88 + 0.12 * prog(f, 150, 24)})`,
+            opacity: prog(f, 135, 24),
+            transform: `scale(${0.88 + 0.12 * prog(f, 135, 24)})`,
             transformOrigin: 'left center',
           }}
         >
@@ -514,12 +514,12 @@ const IntroScene: React.FC = () => {
             lineHeight: 1.15,
             color: C.navy,
             marginTop: 8,
-            ...fadeUp(prog(f, 190, 24)),
+            ...fadeUp(prog(f, 160, 24)),
           }}
         >
           adults worldwide have prediabetes
         </div>
-        <div style={{fontSize: 38, color: C.gray, marginTop: 14, ...fadeUp(prog(f, 215, 24))}}>
+        <div style={{fontSize: 38, color: C.gray, marginTop: 14, ...fadeUp(prog(f, 190, 24))}}>
           That’s over 500 million people
         </div>
         <div
@@ -539,7 +539,7 @@ const IntroScene: React.FC = () => {
             fontWeight: 700,
             color: C.teal,
             marginTop: 12,
-            ...fadeUp(prog(f, 290, 24)),
+            ...fadeUp(prog(f, 300, 24)),
           }}
         >
           Often no symptoms
@@ -548,9 +548,9 @@ const IntroScene: React.FC = () => {
 
       <Caption
         items={[
-          {from: 0, text: 'Imagine a condition that affects hundreds of millions of adults around the world.'},
-          {from: 125, text: 'About 1 in 10 adults worldwide has prediabetes, and most don’t know it.'},
-          {from: 255, text: 'It’s called prediabetes, and it often causes no symptoms at all.'},
+          {from: 8, text: 'Imagine a condition affecting hundreds of millions of adults.'},
+          {from: 128, text: 'About 1 in 10 adults worldwide has prediabetes.'},
+          {from: 242, text: 'Most don’t know it, and there are often no symptoms.'},
         ]}
       />
     </AbsoluteFill>
@@ -575,7 +575,7 @@ const GaugeScene: React.FC = () => {
 
   const needleAngle = interpolate(
     f,
-    [110, 140, 200, 240, 290, 330],
+    [150, 185, 255, 295, 385, 425],
     [180, 154, 154, 90, 90, 28],
     {...CLAMP, easing: Easing.inOut(Easing.cubic)},
   );
@@ -584,9 +584,9 @@ const GaugeScene: React.FC = () => {
 
   const labelOpacity = prog(f, 75, 24);
   const legend = [
-    {color: C.teal, text: 'Below 5.7%', x: 500, start: 145},
-    {color: C.orange, text: '5.7% – 6.4%', x: 860, start: 225},
-    {color: C.red, text: '6.5% or higher', x: 1260, start: 315},
+    {color: C.teal, text: 'Below 5.7%', x: 500, start: 170},
+    {color: C.orange, text: '5.7% – 6.4%', x: 860, start: 290},
+    {color: C.red, text: '6.5% or higher', x: 1260, start: 410},
   ];
 
   return (
@@ -683,13 +683,10 @@ const GaugeScene: React.FC = () => {
       </svg>
       <Caption
         items={[
-          {
-            from: 0,
-            text: 'Prediabetes means your blood sugar is higher than normal, but not yet high enough to be called diabetes.',
-          },
-          {from: 125, text: 'A common blood test, the HbA1C, shows where you stand.'},
-          {from: 205, text: '5.7% to 6.4% is prediabetes.'},
-          {from: 295, text: 'And 6.5% or higher is diabetes.'},
+          {from: 8, text: 'Prediabetes is higher-than-normal blood sugar, but not yet diabetes.'},
+          {from: 157, text: 'The HbA1C blood test shows where you stand.'},
+          {from: 268, text: '5.7% to 6.4% is prediabetes.'},
+          {from: 395, text: 'And 6.5% or higher is diabetes.'},
         ]}
       />
     </AbsoluteFill>
@@ -794,7 +791,7 @@ const BodyScene: React.FC = () => {
     };
   };
 
-  const arrowP = prog(f, 365, 55);
+  const arrowP = prog(f, 330, 55);
 
   return (
     <AbsoluteFill>
@@ -904,20 +901,17 @@ const BodyScene: React.FC = () => {
           fontWeight={700}
           fontSize={36}
           fill={C.red}
-          opacity={prog(f, 385, 24)}
+          opacity={prog(f, 350, 24)}
         >
           Sugar stays in the blood
         </text>
       </svg>
       <Caption
         items={[
-          {from: 0, text: 'So what is happening inside the body?'},
-          {
-            from: 90,
-            text: 'Normally, insulin works like a key. It lets sugar move from your blood into your cells for energy.',
-          },
-          {from: 205, text: 'But sometimes your cells stop responding well to insulin.'},
-          {from: 345, text: 'So sugar stays in your blood, and your blood sugar rises.'},
+          {from: 8, text: 'So what’s happening inside the body?'},
+          {from: 88, text: 'Normally, insulin is a key that lets sugar into your cells.'},
+          {from: 210, text: 'But sometimes your cells stop responding to it.'},
+          {from: 307, text: 'So sugar stays in your blood, and blood sugar rises.'},
         ]}
       />
     </AbsoluteFill>
@@ -1008,27 +1002,27 @@ const RisksScene: React.FC = () => {
   const f = useCurrentFrame();
 
   const fixed: RiskItem[] = [
-    {icon: <IconAge />, label: 'Getting older', desc: 'Risk rises, especially after 35–45', start: 32},
-    {icon: <IconFamily />, label: 'Family history', desc: 'Parent or sibling with type 2 diabetes', start: 78},
-    {icon: <IconGlobe />, label: 'Family background', desc: 'Some backgrounds have higher rates', start: 124},
+    {icon: <IconAge />, label: 'Getting older', desc: 'Risk rises, especially after 35–45', start: 22},
+    {icon: <IconFamily />, label: 'Family history', desc: 'Parent or sibling with type 2 diabetes', start: 60},
+    {icon: <IconGlobe />, label: 'Family background', desc: 'Some backgrounds have higher rates', start: 98},
   ];
   const habits: RiskItem[] = [
-    {icon: <IconWeight />, label: 'Extra weight', desc: 'Especially around the belly', start: 182},
-    {icon: <IconCouch />, label: 'Not moving much', desc: 'Little regular physical activity', start: 218},
-    {icon: <IconCup />, label: 'Sugary diet', desc: 'Lots of sugary drinks and snacks', start: 254},
-    {icon: <IconSmoke />, label: 'Smoking', desc: 'Raises the risk of type 2 diabetes', start: 290},
-    {icon: <IconMoon />, label: 'Poor sleep', desc: 'Too little or broken sleep', start: 326},
+    {icon: <IconWeight />, label: 'Extra weight', desc: 'Especially around the belly', start: 132},
+    {icon: <IconCouch />, label: 'Not moving much', desc: 'Little regular physical activity', start: 160},
+    {icon: <IconCup />, label: 'Sugary diet', desc: 'Lots of sugary drinks and snacks', start: 188},
+    {icon: <IconSmoke />, label: 'Smoking', desc: 'Raises the risk of type 2 diabetes', start: 216},
+    {icon: <IconMoon />, label: 'Poor sleep', desc: 'Too little or broken sleep', start: 244},
   ];
   const conditions: RiskItem[] = [
-    {icon: <IconBP />, label: 'High blood pressure', desc: 'Often 130/80 or higher', start: 398},
-    {icon: <IconCholesterol />, label: 'Unhealthy cholesterol', desc: 'Too little good, or too much bad', start: 440},
-    {icon: <IconVenus />, label: 'PCOS', desc: 'A common hormone condition in women', start: 482},
-    {icon: <IconPregnancy />, label: 'High blood sugar', desc: 'During a past pregnancy', start: 524},
+    {icon: <IconBP />, label: 'High blood pressure', desc: 'Often 130/80 or higher', start: 246},
+    {icon: <IconCholesterol />, label: 'Unhealthy cholesterol', desc: 'Too little good, or too much bad', start: 272},
+    {icon: <IconVenus />, label: 'PCOS', desc: 'A common hormone condition in women', start: 298},
+    {icon: <IconPregnancy />, label: 'High blood sugar', desc: 'During a past pregnancy', start: 324},
   ];
 
-  const meterIn = prog(f, 560, 24);
-  const marker = prog(f, 585, 170);
-  const bannerP = prog(f, 790, 24);
+  const meterIn = prog(f, 350, 24);
+  const marker = prog(f, 360, 130);
+  const bannerP = prog(f, 508, 24);
   const markerColor = interpolateColors(marker, [0, 0.5, 1], [C.teal, C.orange, C.red]);
 
   return (
@@ -1046,8 +1040,8 @@ const RisksScene: React.FC = () => {
         }}
       >
         <RiskColumn pill="OUT OF YOUR CONTROL" color={C.red} pillStart={14} items={fixed} />
-        <RiskColumn pill="HABITS YOU CAN CHANGE" color={C.teal} pillStart={168} items={habits} />
-        <RiskColumn pill="HEALTH CONDITIONS" color={C.blue} pillStart={382} items={conditions} />
+        <RiskColumn pill="HABITS YOU CAN CHANGE" color={C.teal} pillStart={118} items={habits} />
+        <RiskColumn pill="HEALTH CONDITIONS" color={C.blue} pillStart={232} items={conditions} />
       </div>
 
       {/* risk meter */}
@@ -1121,14 +1115,11 @@ const RisksScene: React.FC = () => {
 
       <Caption
         items={[
-          {from: 0, text: 'Some risk factors are out of your control.'},
-          {from: 170, text: 'Other risk factors come from daily life, and these are the ones you can change.'},
-          {from: 385, text: 'Certain health conditions also raise your risk.'},
-          {
-            from: 570,
-            text: 'The more risk factors you have, the higher your chance of prediabetes and, later, type 2 diabetes.',
-          },
-          {from: 790, text: 'But a high risk is a warning, not a diagnosis.'},
+          {from: 8, text: 'Some risk factors are out of your control.'},
+          {from: 125, text: 'Others come from daily habits, and you can change these.'},
+          {from: 240, text: 'Certain health conditions also raise your risk.'},
+          {from: 345, text: 'More risk factors mean a higher chance of prediabetes and type 2 diabetes.'},
+          {from: 508, text: 'But high risk is a warning, not a diagnosis.'},
         ]}
       />
     </AbsoluteFill>
@@ -1186,7 +1177,7 @@ const TestsScene: React.FC = () => {
       normal: 'Below 5.7%',
       pre: '5.7% – 6.4%',
       icon: <IconDrop size={110} />,
-      start: 28,
+      start: 8,
     },
     {
       name: 'Fasting Glucose',
@@ -1194,7 +1185,7 @@ const TestsScene: React.FC = () => {
       normal: 'Below 100 mg/dL',
       pre: '100 – 125 mg/dL',
       icon: <IconMeter size={110} />,
-      start: 190,
+      start: 160,
     },
     {
       name: 'Glucose Tolerance',
@@ -1202,7 +1193,7 @@ const TestsScene: React.FC = () => {
       normal: 'Below 140 mg/dL',
       pre: '140 – 199 mg/dL',
       icon: <IconGlass size={110} />,
-      start: 350,
+      start: 268,
     },
   ];
 
@@ -1267,10 +1258,10 @@ const TestsScene: React.FC = () => {
       </div>
       <Caption
         items={[
-          {from: 0, text: 'Your doctor can use a simple blood test to check.'},
-          {from: 150, text: 'An HbA1C test shows your average blood sugar. A fasting glucose test checks it after an overnight fast.'},
-          {from: 330, text: 'Or a glucose tolerance test, which checks how your body handles a sugary drink.'},
-          {from: 480, text: 'If you have risk factors, ask your doctor how often to get tested.'},
+          {from: 8, text: 'The HbA1C shows your average blood sugar over two to three months.'},
+          {from: 160, text: 'A fasting test checks it after not eating overnight.'},
+          {from: 268, text: 'A glucose tolerance test checks it after a sugary drink.'},
+          {from: 382, text: 'If you have risk factors, ask your doctor about testing.'},
         ]}
       />
     </AbsoluteFill>
@@ -1288,9 +1279,9 @@ const GoodScene: React.FC = () => {
   const beat = 1 + Math.sin(f / 7) * 0.03;
 
   const actions = [
-    {icon: <IconWeight size={64} />, text: 'Lose 5–7% of your body weight', start: 150},
-    {icon: <IconRunner size={64} />, text: '150 minutes of activity a week', start: 230},
-    {icon: <IconApple size={64} />, text: 'Eat more whole foods', start: 315},
+    {icon: <IconWeight size={64} />, text: 'Lose 5–7% of your body weight', start: 190},
+    {icon: <IconRunner size={64} />, text: '150 minutes of activity a week', start: 276},
+    {icon: <IconApple size={64} />, text: 'Eat more whole foods', start: 352},
   ];
 
   return (
@@ -1355,13 +1346,10 @@ const GoodScene: React.FC = () => {
 
       <Caption
         items={[
-          {
-            from: 0,
-            text: 'In a major clinical trial, lifestyle changes lowered the risk of type 2 diabetes by 58%.',
-          },
-          {from: 150, text: 'Losing 5–7% of your body weight helps.'},
-          {from: 230, text: 'Getting about 150 minutes of activity a week.'},
-          {from: 315, text: 'And eating more whole foods.'},
+          {from: 8, text: 'Lifestyle changes cut the risk of type 2 diabetes by 58% in a major trial.'},
+          {from: 190, text: 'Lose 5–7% of your weight.'},
+          {from: 276, text: 'Move 150 minutes a week.'},
+          {from: 352, text: 'Eat more whole foods.'},
         ]}
       />
     </AbsoluteFill>
@@ -1387,7 +1375,7 @@ const CloseScene: React.FC = () => {
 
       <div style={{position: 'absolute', left: 260, top: 150, fontFamily: SERIF}}>
         {items.map((t, i) => {
-          const p = pop(f, 24 + i * 38);
+          const p = pop(f, [14, 62, 145, 185][i]);
           return (
             <div
               key={t}
@@ -1419,12 +1407,12 @@ const CloseScene: React.FC = () => {
           border: `3px solid ${C.teal}`,
           borderRadius: 24,
           padding: '22px 40px',
-          ...fadeUp(prog(f, 200, 26)),
+          ...fadeUp(prog(f, 232, 26)),
         }}
       >
         <div style={{fontSize: 22, fontWeight: 700, letterSpacing: 2, color: C.teal}}>WHY WE MADE THIS VIDEO</div>
         <div style={{fontSize: 36, color: C.navy, lineHeight: 1.3, marginTop: 6}}>
-          To spread community awareness and help more people learn about prediabetes.
+          To spread community awareness and educate people about prediabetes.
         </div>
       </div>
 
@@ -1440,7 +1428,7 @@ const CloseScene: React.FC = () => {
           border: `2px solid ${C.line}`,
           borderRadius: 24,
           padding: '20px 40px',
-          ...fadeUp(prog(f, 255, 26)),
+          ...fadeUp(prog(f, 300, 26)),
         }}
       >
         <div style={{fontSize: 22, fontWeight: 700, letterSpacing: 2, color: C.gray}}>REFERENCES</div>
@@ -1454,8 +1442,10 @@ const CloseScene: React.FC = () => {
 
       <Caption
         items={[
-          {from: 0, text: 'Small steps now can protect your health for years.'},
-          {from: 300, text: 'This video is for education only and is not medical advice.'},
+          {from: 8, text: 'Learn your risk factors. Talk to your doctor about a blood test.'},
+          {from: 140, text: 'Move more, eat well, and sleep well.'},
+          {from: 232, text: 'Our goal is to spread community awareness and educate people about prediabetes.'},
+          {from: 390, text: 'This video is for education, not medical advice.'},
         ]}
       />
     </AbsoluteFill>
@@ -1481,7 +1471,7 @@ export const ExplainerVideo: React.FC = () => {
   return (
     <AbsoluteFill style={{backgroundColor: C.bg}}>
       <Background />
-      <Audio src={music} />
+      <Audio src={voiceover} />
       {scenes.map((s, i) => {
         const start = from;
         from += s.d;
