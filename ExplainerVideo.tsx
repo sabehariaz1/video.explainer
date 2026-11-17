@@ -16,9 +16,9 @@ import voiceover from './voiceover.mp3';
 /*  Global settings                                                           */
 /* -------------------------------------------------------------------------- */
 
-const FPS = 30;
-const WIDTH = 1920;
-const HEIGHT = 1080;
+export const FPS = 30;
+export const WIDTH = 1920;
+export const HEIGHT = 1080;
 
 // Scene lengths in frames. They add up to exactly 3,600 frames = 2:00 at 30 fps.
 const D = {
@@ -33,7 +33,7 @@ const D = {
 
 const TOTAL_FRAMES = D.intro + D.gauge + D.body + D.risks + D.tests + D.good + D.close; // 3600
 
-const C = {
+export const C = {
   bg: '#E8F4FD',
   navy: '#1B3A6B',
   teal: '#2EC4B6',
@@ -52,15 +52,15 @@ const SERIF = "'DejaVu Serif', Georgia, 'Times New Roman', serif";
 /*  Animation helpers                                                         */
 /* -------------------------------------------------------------------------- */
 
-const CLAMP = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
+export const CLAMP = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 const SMOOTH = Easing.bezier(0.22, 1, 0.36, 1);
 
 /** Eased 0 -> 1 progress between `start` and `start + dur`. */
-const prog = (f: number, start: number, dur: number): number =>
+export const prog = (f: number, start: number, dur: number): number =>
   interpolate(f, [start, start + dur], [0, 1], {...CLAMP, easing: SMOOTH});
 
 /** Gentle springy pop-in, 0 before `start`. */
-const pop = (f: number, start: number): number =>
+export const pop = (f: number, start: number): number =>
   f < start
     ? 0
     : spring({
@@ -69,19 +69,19 @@ const pop = (f: number, start: number): number =>
         config: {damping: 15, stiffness: 150, mass: 0.7},
       });
 
-const lerp = (a: number, b: number, t: number): number => a + (b - a) * t;
+export const lerp = (a: number, b: number, t: number): number => a + (b - a) * t;
 
-const fadeUp = (p: number): React.CSSProperties => ({
+export const fadeUp = (p: number): React.CSSProperties => ({
   opacity: Math.min(1, p),
   transform: `translateY(${(1 - Math.min(1, p)) * 22}px)`,
 });
 
-const polar = (cx: number, cy: number, r: number, deg: number) => ({
+export const polar = (cx: number, cy: number, r: number, deg: number) => ({
   x: cx + r * Math.cos((deg * Math.PI) / 180),
   y: cy - r * Math.sin((deg * Math.PI) / 180),
 });
 
-const arcPath = (cx: number, cy: number, r: number, a1: number, a2: number): string => {
+export const arcPath = (cx: number, cy: number, r: number, a1: number, a2: number): string => {
   const p1 = polar(cx, cy, r, a1);
   const p2 = polar(cx, cy, r, a2);
   return `M ${p1.x} ${p1.y} A ${r} ${r} 0 0 1 ${p2.x} ${p2.y}`;
@@ -91,7 +91,7 @@ const arcPath = (cx: number, cy: number, r: number, a1: number, a2: number): str
 /*  Shared pieces: background, progress bar, title, caption, scene fade       */
 /* -------------------------------------------------------------------------- */
 
-const Background: React.FC = () => {
+export const Background: React.FC = () => {
   const f = useCurrentFrame();
   const pluses: Array<[number, number]> = [
     [150, 250],
@@ -151,7 +151,7 @@ const ProgressBar: React.FC = () => {
   );
 };
 
-const SceneFade: React.FC<{duration: number; children: React.ReactNode}> = ({
+export const SceneFade: React.FC<{duration: number; children: React.ReactNode}> = ({
   duration,
   children,
 }) => {
@@ -241,7 +241,7 @@ const Caption: React.FC<{items: CapItem[]}> = ({items}) => {
 /*  Icons                                                                     */
 /* -------------------------------------------------------------------------- */
 
-const Person: React.FC<{x: number; y: number; color: string; s?: number}> = ({
+export const Person: React.FC<{x: number; y: number; color: string; s?: number}> = ({
   x,
   y,
   color,
@@ -254,13 +254,13 @@ const Person: React.FC<{x: number; y: number; color: string; s?: number}> = ({
   </g>
 );
 
-const Svg: React.FC<{size?: number; children: React.ReactNode}> = ({size = 72, children}) => (
+export const Svg: React.FC<{size?: number; children: React.ReactNode}> = ({size = 72, children}) => (
   <svg viewBox="0 0 64 64" width={size} height={size}>
     {children}
   </svg>
 );
 
-const IconAge: React.FC<{size?: number}> = ({size}) => (
+export const IconAge: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <circle cx={32} cy={32} r={27} fill="#fff" stroke={C.navy} strokeWidth={3.5} />
     <text
@@ -277,7 +277,7 @@ const IconAge: React.FC<{size?: number}> = ({size}) => (
   </Svg>
 );
 
-const IconFamily: React.FC<{size?: number}> = ({size}) => (
+export const IconFamily: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <circle cx={16} cy={12} r={6} fill={C.navy} />
     <rect x={9} y={20} width={14} height={18} rx={6} fill={C.navy} />
@@ -289,7 +289,7 @@ const IconFamily: React.FC<{size?: number}> = ({size}) => (
   </Svg>
 );
 
-const IconGlobe: React.FC<{size?: number}> = ({size}) => (
+export const IconGlobe: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <circle cx={32} cy={32} r={26} fill="#fff" stroke={C.navy} strokeWidth={3} />
     <ellipse cx={32} cy={32} rx={11} ry={26} fill="none" stroke={C.navy} strokeWidth={2.5} />
@@ -298,7 +298,7 @@ const IconGlobe: React.FC<{size?: number}> = ({size}) => (
   </Svg>
 );
 
-const IconWeight: React.FC<{size?: number}> = ({size}) => (
+export const IconWeight: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <rect x={7} y={9} width={50} height={46} rx={11} fill="#fff" stroke={C.navy} strokeWidth={3.5} />
     <path d="M18 36 A14 14 0 0 1 46 36" stroke={C.navy} strokeWidth={3} fill="none" />
@@ -307,7 +307,7 @@ const IconWeight: React.FC<{size?: number}> = ({size}) => (
   </Svg>
 );
 
-const IconCouch: React.FC<{size?: number}> = ({size}) => (
+export const IconCouch: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <rect x={15} y={14} width={34} height={20} rx={7} fill={C.pale} stroke={C.navy} strokeWidth={3} />
     <circle cx={32} cy={24} r={4} fill={C.navy} />
@@ -318,7 +318,7 @@ const IconCouch: React.FC<{size?: number}> = ({size}) => (
   </Svg>
 );
 
-const IconCup: React.FC<{size?: number}> = ({size}) => (
+export const IconCup: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <path d="M17 22 L21 58 H43 L47 22 Z" fill={C.red} stroke={C.navy} strokeWidth={2.5} />
     <rect x={13} y={16} width={38} height={8} rx={3} fill={C.navy} />
@@ -328,7 +328,7 @@ const IconCup: React.FC<{size?: number}> = ({size}) => (
   </Svg>
 );
 
-const IconSmoke: React.FC<{size?: number}> = ({size}) => (
+export const IconSmoke: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <rect x={5} y={40} width={15} height={11} fill={C.orange} stroke={C.navy} strokeWidth={2} />
     <rect x={20} y={40} width={34} height={11} fill="#fff" stroke={C.navy} strokeWidth={2} />
@@ -337,7 +337,7 @@ const IconSmoke: React.FC<{size?: number}> = ({size}) => (
   </Svg>
 );
 
-const IconMoon: React.FC<{size?: number}> = ({size}) => (
+export const IconMoon: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <path d="M38 6 A26 26 0 1 0 58 42 A21 21 0 1 1 38 6 Z" fill={C.navy} />
     <circle cx={50} cy={14} r={3.5} fill={C.orange} />
@@ -345,7 +345,7 @@ const IconMoon: React.FC<{size?: number}> = ({size}) => (
   </Svg>
 );
 
-const IconBP: React.FC<{size?: number}> = ({size}) => (
+export const IconBP: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <circle cx={32} cy={32} r={25} fill="#fff" stroke={C.navy} strokeWidth={3.5} />
     <path d="M14 38 A18 18 0 0 1 50 38" stroke={C.navy} strokeWidth={2.5} fill="none" strokeDasharray="2 5" />
@@ -354,7 +354,7 @@ const IconBP: React.FC<{size?: number}> = ({size}) => (
   </Svg>
 );
 
-const IconCholesterol: React.FC<{size?: number}> = ({size}) => (
+export const IconCholesterol: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <rect x={5} y={20} width={54} height={24} rx={12} fill="#FDE3E6" stroke={C.navy} strokeWidth={3} />
     {[17, 27, 37, 47].map((x) => (
@@ -363,14 +363,14 @@ const IconCholesterol: React.FC<{size?: number}> = ({size}) => (
   </Svg>
 );
 
-const IconVenus: React.FC<{size?: number}> = ({size}) => (
+export const IconVenus: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <circle cx={32} cy={23} r={14} fill="none" stroke={C.navy} strokeWidth={4} />
     <path d="M32 37 V59 M21 48 H43" stroke={C.navy} strokeWidth={4} strokeLinecap="round" />
   </Svg>
 );
 
-const IconPregnancy: React.FC<{size?: number}> = ({size}) => (
+export const IconPregnancy: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <circle cx={26} cy={11} r={8} fill={C.navy} />
     <rect x={14} y={22} width={24} height={38} rx={11} fill={C.navy} />
@@ -378,14 +378,14 @@ const IconPregnancy: React.FC<{size?: number}> = ({size}) => (
   </Svg>
 );
 
-const IconDrop: React.FC<{size?: number}> = ({size}) => (
+export const IconDrop: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <path d="M32 5 C38 19 51 29 51 42 A19 19 0 0 1 13 42 C13 29 26 19 32 5 Z" fill={C.red} />
     <path d="M22 44 A10 10 0 0 0 30 53" stroke="#fff" strokeWidth={3} fill="none" strokeLinecap="round" opacity={0.7} />
   </Svg>
 );
 
-const IconMeter: React.FC<{size?: number}> = ({size}) => (
+export const IconMeter: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <rect x={18} y={4} width={28} height={44} rx={5} fill={C.blue} />
     <rect x={22} y={9} width={20} height={12} rx={2} fill={C.navy} />
@@ -399,7 +399,7 @@ const IconMeter: React.FC<{size?: number}> = ({size}) => (
   </Svg>
 );
 
-const IconGlass: React.FC<{size?: number}> = ({size}) => (
+export const IconGlass: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <path d="M12 8 H52 L47 58 H17 Z" fill="#D8ECFB" stroke={C.navy} strokeWidth={3} />
     <path d="M14 30 H50 L47 58 H17 Z" fill={C.orange} />
@@ -407,7 +407,7 @@ const IconGlass: React.FC<{size?: number}> = ({size}) => (
   </Svg>
 );
 
-const IconHeart: React.FC<{size?: number; color?: string}> = ({size = 90, color = C.teal}) => (
+export const IconHeart: React.FC<{size?: number; color?: string}> = ({size = 90, color = C.teal}) => (
   <Svg size={size}>
     <path
       d="M32 57 C8 41 4 22 16 14 C24 9 30 14 32 20 C34 14 40 9 48 14 C60 22 56 41 32 57 Z"
@@ -416,7 +416,7 @@ const IconHeart: React.FC<{size?: number; color?: string}> = ({size = 90, color 
   </Svg>
 );
 
-const IconRunner: React.FC<{size?: number}> = ({size}) => (
+export const IconRunner: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <circle cx={38} cy={10} r={6} fill={C.teal} />
     <path
@@ -430,7 +430,7 @@ const IconRunner: React.FC<{size?: number}> = ({size}) => (
   </Svg>
 );
 
-const IconApple: React.FC<{size?: number}> = ({size}) => (
+export const IconApple: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <circle cx={25} cy={38} r={16} fill={C.red} />
     <circle cx={39} cy={38} r={16} fill={C.red} />
@@ -439,7 +439,7 @@ const IconApple: React.FC<{size?: number}> = ({size}) => (
   </Svg>
 );
 
-const CheckCircle: React.FC<{size?: number}> = ({size = 52}) => (
+export const CheckCircle: React.FC<{size?: number}> = ({size = 52}) => (
   <svg viewBox="0 0 64 64" width={size} height={size}>
     <circle cx={32} cy={32} r={30} fill={C.teal} />
     <path d="M18 33 L28 43 L47 22" stroke="#fff" strokeWidth={7} fill="none" strokeLinecap="round" strokeLinejoin="round" />
@@ -697,7 +697,7 @@ const GaugeScene: React.FC = () => {
 /*  Scene 3: What goes wrong inside the body (insulin key + cell lock)        */
 /* -------------------------------------------------------------------------- */
 
-const Lock: React.FC<{x: number; y: number; color: string; open: number}> = ({x, y, color, open}) => (
+export const Lock: React.FC<{x: number; y: number; color: string; open: number}> = ({x, y, color, open}) => (
   <g transform={`translate(${x} ${y}) scale(1.5)`}>
     <g transform={`translate(0 ${-open * 9}) rotate(${-open * 22} 10 -12)`}>
       <path d="M -10 -4 V -14 a 10 10 0 0 1 20 0 V -4" fill="none" stroke={color} strokeWidth={6} strokeLinecap="round" />

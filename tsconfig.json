@@ -3,7 +3,10 @@
     "target": "ES2018",
     "module": "commonjs",
     "moduleResolution": "node",
-    "lib": ["es2020", "dom"],
+    "lib": [
+      "es2020",
+      "dom"
+    ],
     "jsx": "react-jsx",
     "strict": true,
     "noEmit": true,
@@ -11,5 +14,12 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["index.ts", "ExplainerVideo.tsx", "declarations.d.ts"]
+  "include": [
+    "index.ts",
+    "Root.tsx",
+    "ExplainerVideo.tsx",
+    "ExplainerVideoAR.tsx",
+    "timing-ar.ts",
+    "declarations.d.ts"
+  ]
 }

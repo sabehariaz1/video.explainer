@@ -6,6 +6,7 @@
   "scripts": {
     "start": "remotion studio index.ts",
     "build": "remotion render index.ts PrediabetesExplainer out/PrediabetesExplainer.mp4 --codec=h264 --crf=18",
+    "build:ar": "remotion render index.ts PrediabetesExplainerAR out/PrediabetesExplainer-Arabic.mp4 --codec=h264 --crf=18",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
