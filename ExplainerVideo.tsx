@@ -16,9 +16,9 @@ import voiceover from './voiceover.mp3';
 /*  Global settings                                                           */
 /* -------------------------------------------------------------------------- */
 
-export const FPS = 30;
-export const WIDTH = 1920;
-export const HEIGHT = 1080;
+const FPS = 30;
+const WIDTH = 1920;
+const HEIGHT = 1080;
 
 // Scene lengths in frames. They add up to exactly 3,600 frames = 2:00 at 30 fps.
 const D = {
@@ -33,7 +33,7 @@ const D = {
 
 const TOTAL_FRAMES = D.intro + D.gauge + D.body + D.risks + D.tests + D.good + D.close; // 3600
 
-export const C = {
+const C = {
   bg: '#E8F4FD',
   navy: '#1B3A6B',
   teal: '#2EC4B6',
@@ -46,21 +46,19 @@ export const C = {
   pale: '#C8DFF5',
 };
 
-const SERIF = "'DejaVu Serif', Georgia, 'Times New Roman', serif";
+const ARABIC_FONT = "'Amiri', 'Traditional Arabic', 'DejaVu Serif', serif";
 
 /* -------------------------------------------------------------------------- */
 /*  Animation helpers                                                         */
 /* -------------------------------------------------------------------------- */
 
-export const CLAMP = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
+const CLAMP = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 const SMOOTH = Easing.bezier(0.22, 1, 0.36, 1);
 
-/** Eased 0 -> 1 progress between `start` and `start + dur`. */
-export const prog = (f: number, start: number, dur: number): number =>
+const prog = (f: number, start: number, dur: number): number =>
   interpolate(f, [start, start + dur], [0, 1], {...CLAMP, easing: SMOOTH});
 
-/** Gentle springy pop-in, 0 before `start`. */
-export const pop = (f: number, start: number): number =>
+const pop = (f: number, start: number): number =>
   f < start
     ? 0
     : spring({
@@ -69,29 +67,29 @@ export const pop = (f: number, start: number): number =>
         config: {damping: 15, stiffness: 150, mass: 0.7},
       });
 
-export const lerp = (a: number, b: number, t: number): number => a + (b - a) * t;
+const lerp = (a: number, b: number, t: number): number => a + (b - a) * t;
 
-export const fadeUp = (p: number): React.CSSProperties => ({
+const fadeUp = (p: number): React.CSSProperties => ({
   opacity: Math.min(1, p),
   transform: `translateY(${(1 - Math.min(1, p)) * 22}px)`,
 });
 
-export const polar = (cx: number, cy: number, r: number, deg: number) => ({
+const polar = (cx: number, cy: number, r: number, deg: number) => ({
   x: cx + r * Math.cos((deg * Math.PI) / 180),
   y: cy - r * Math.sin((deg * Math.PI) / 180),
 });
 
-export const arcPath = (cx: number, cy: number, r: number, a1: number, a2: number): string => {
+const arcPath = (cx: number, cy: number, r: number, a1: number, a2: number): string => {
   const p1 = polar(cx, cy, r, a1);
   const p2 = polar(cx, cy, r, a2);
   return `M ${p1.x} ${p1.y} A ${r} ${r} 0 0 1 ${p2.x} ${p2.y}`;
 };
 
 /* -------------------------------------------------------------------------- */
-/*  Shared pieces: background, progress bar, title, caption, scene fade       */
+/*  Shared pieces                                                             */
 /* -------------------------------------------------------------------------- */
 
-export const Background: React.FC = () => {
+const Background: React.FC = () => {
   const f = useCurrentFrame();
   const pluses: Array<[number, number]> = [
     [150, 250],
@@ -151,7 +149,7 @@ const ProgressBar: React.FC = () => {
   );
 };
 
-export const SceneFade: React.FC<{duration: number; children: React.ReactNode}> = ({
+const SceneFade: React.FC<{duration: number; children: React.ReactNode}> = ({
   duration,
   children,
 }) => {
@@ -174,9 +172,9 @@ const Title: React.FC<{text: string; color?: string}> = ({text, color = C.navy})
         left: 0,
         right: 0,
         textAlign: 'center',
-        fontFamily: SERIF,
+        fontFamily: ARABIC_FONT,
         fontWeight: 700,
-        fontSize: 64,
+        fontSize: 60,
         color,
         opacity: p,
         transform: `translateY(${(1 - p) * -18}px)`,
@@ -194,16 +192,16 @@ const CAPTION_STYLE: React.CSSProperties = {
   border: `2px solid ${C.line}`,
   borderRadius: 20,
   padding: '14px 38px',
-  fontFamily: SERIF,
-  fontSize: 34,
-  lineHeight: 1.25,
+  fontFamily: ARABIC_FONT,
+  fontSize: 32,
+  lineHeight: 1.35,
   color: C.navy,
   textAlign: 'center',
   maxWidth: 1560,
   boxShadow: '0 4px 14px rgba(27,58,107,0.08)',
+  direction: 'rtl',
 };
 
-/** One single centered caption pill. Cross-fades between lines. */
 const Caption: React.FC<{items: CapItem[]}> = ({items}) => {
   const f = useCurrentFrame();
   let idx = -1;
@@ -238,10 +236,10 @@ const Caption: React.FC<{items: CapItem[]}> = ({items}) => {
 };
 
 /* -------------------------------------------------------------------------- */
-/*  Icons                                                                     */
+/*  Icons & Graphics                                                          */
 /* -------------------------------------------------------------------------- */
 
-export const Person: React.FC<{x: number; y: number; color: string; s?: number}> = ({
+const Person: React.FC<{x: number; y: number; color: string; s?: number}> = ({
   x,
   y,
   color,
@@ -254,30 +252,22 @@ export const Person: React.FC<{x: number; y: number; color: string; s?: number}>
   </g>
 );
 
-export const Svg: React.FC<{size?: number; children: React.ReactNode}> = ({size = 72, children}) => (
+const Svg: React.FC<{size?: number; children: React.ReactNode}> = ({size = 72, children}) => (
   <svg viewBox="0 0 64 64" width={size} height={size}>
     {children}
   </svg>
 );
 
-export const IconAge: React.FC<{size?: number}> = ({size}) => (
+const IconAge: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <circle cx={32} cy={32} r={27} fill="#fff" stroke={C.navy} strokeWidth={3.5} />
-    <text
-      x={32}
-      y={40}
-      textAnchor="middle"
-      fontFamily={SERIF}
-      fontWeight={700}
-      fontSize={22}
-      fill={C.navy}
-    >
+    <text x={32} y={40} textAnchor="middle" fontFamily={ARABIC_FONT} fontWeight={700} fontSize={20} fill={C.navy}>
       35+
     </text>
   </Svg>
 );
 
-export const IconFamily: React.FC<{size?: number}> = ({size}) => (
+const IconFamily: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <circle cx={16} cy={12} r={6} fill={C.navy} />
     <rect x={9} y={20} width={14} height={18} rx={6} fill={C.navy} />
@@ -285,76 +275,65 @@ export const IconFamily: React.FC<{size?: number}> = ({size}) => (
     <rect x={41} y={20} width={14} height={18} rx={6} fill={C.red} />
     <path d="M16 40 L32 50 M48 40 L32 50" stroke={C.navy} strokeWidth={3} fill="none" />
     <circle cx={32} cy={50} r={5} fill={C.navy} />
-    <rect x={26} y={55} width={12} height={8} rx={4} fill={C.navy} />
   </Svg>
 );
 
-export const IconGlobe: React.FC<{size?: number}> = ({size}) => (
+const IconGlobe: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <circle cx={32} cy={32} r={26} fill="#fff" stroke={C.navy} strokeWidth={3} />
     <ellipse cx={32} cy={32} rx={11} ry={26} fill="none" stroke={C.navy} strokeWidth={2.5} />
     <path d="M6 32 H58" stroke={C.navy} strokeWidth={2.5} />
-    <path d="M10 18 Q32 26 54 18 M10 46 Q32 38 54 46" stroke={C.navy} strokeWidth={2.5} fill="none" />
   </Svg>
 );
 
-export const IconWeight: React.FC<{size?: number}> = ({size}) => (
+const IconWeight: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <rect x={7} y={9} width={50} height={46} rx={11} fill="#fff" stroke={C.navy} strokeWidth={3.5} />
     <path d="M18 36 A14 14 0 0 1 46 36" stroke={C.navy} strokeWidth={3} fill="none" />
     <line x1={32} y1={36} x2={40} y2={25} stroke={C.red} strokeWidth={3.5} strokeLinecap="round" />
-    <circle cx={32} cy={36} r={3.5} fill={C.navy} />
   </Svg>
 );
 
-export const IconCouch: React.FC<{size?: number}> = ({size}) => (
+const IconCouch: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <rect x={15} y={14} width={34} height={20} rx={7} fill={C.pale} stroke={C.navy} strokeWidth={3} />
     <circle cx={32} cy={24} r={4} fill={C.navy} />
     <rect x={5} y={26} width={12} height={26} rx={6} fill={C.pale} stroke={C.navy} strokeWidth={3} />
     <rect x={47} y={26} width={12} height={26} rx={6} fill={C.pale} stroke={C.navy} strokeWidth={3} />
-    <rect x={12} y={36} width={40} height={16} rx={5} fill={C.pale} stroke={C.navy} strokeWidth={3} />
-    <path d="M14 52 v6 M50 52 v6" stroke={C.navy} strokeWidth={3} strokeLinecap="round" />
   </Svg>
 );
 
-export const IconCup: React.FC<{size?: number}> = ({size}) => (
+const IconCup: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <path d="M17 22 L21 58 H43 L47 22 Z" fill={C.red} stroke={C.navy} strokeWidth={2.5} />
     <rect x={13} y={16} width={38} height={8} rx={3} fill={C.navy} />
     <path d="M36 16 L43 5" stroke={C.navy} strokeWidth={3} strokeLinecap="round" />
-    <rect x={25} y={34} width={6} height={9} rx={2} fill="#fff" />
-    <rect x={34} y={38} width={6} height={9} rx={2} fill="#fff" />
   </Svg>
 );
 
-export const IconSmoke: React.FC<{size?: number}> = ({size}) => (
+const IconSmoke: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <rect x={5} y={40} width={15} height={11} fill={C.orange} stroke={C.navy} strokeWidth={2} />
     <rect x={20} y={40} width={34} height={11} fill="#fff" stroke={C.navy} strokeWidth={2} />
-    <rect x={54} y={40} width={5} height={11} fill={C.red} />
     <path d="M46 35 C41 28 52 24 47 16 C45 12 49 8 49 6" stroke={C.gray} strokeWidth={3} fill="none" strokeLinecap="round" />
   </Svg>
 );
 
-export const IconMoon: React.FC<{size?: number}> = ({size}) => (
+const IconMoon: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <path d="M38 6 A26 26 0 1 0 58 42 A21 21 0 1 1 38 6 Z" fill={C.navy} />
     <circle cx={50} cy={14} r={3.5} fill={C.orange} />
-    <circle cx={57} cy={26} r={2.5} fill={C.orange} />
   </Svg>
 );
 
-export const IconBP: React.FC<{size?: number}> = ({size}) => (
+const IconBP: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <circle cx={32} cy={32} r={25} fill="#fff" stroke={C.navy} strokeWidth={3.5} />
-    <path d="M14 38 A18 18 0 0 1 50 38" stroke={C.navy} strokeWidth={2.5} fill="none" strokeDasharray="2 5" />
     <line x1={32} y1={34} x2={44} y2={21} stroke={C.red} strokeWidth={3.5} strokeLinecap="round" />
-    <circle cx={32} cy={34} r={4} fill={C.navy} />
   </Svg>
 );
 
-export const IconCholesterol: React.FC<{size?: number}> = ({size}) => (
+const IconCholesterol: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <rect x={5} y={20} width={54} height={24} rx={12} fill="#FDE3E6" stroke={C.navy} strokeWidth={3} />
     {[17, 27, 37, 47].map((x) => (
@@ -363,14 +342,14 @@ export const IconCholesterol: React.FC<{size?: number}> = ({size}) => (
   </Svg>
 );
 
-export const IconVenus: React.FC<{size?: number}> = ({size}) => (
+const IconVenus: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <circle cx={32} cy={23} r={14} fill="none" stroke={C.navy} strokeWidth={4} />
     <path d="M32 37 V59 M21 48 H43" stroke={C.navy} strokeWidth={4} strokeLinecap="round" />
   </Svg>
 );
 
-export const IconPregnancy: React.FC<{size?: number}> = ({size}) => (
+const IconPregnancy: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <circle cx={26} cy={11} r={8} fill={C.navy} />
     <rect x={14} y={22} width={24} height={38} rx={11} fill={C.navy} />
@@ -378,68 +357,48 @@ export const IconPregnancy: React.FC<{size?: number}> = ({size}) => (
   </Svg>
 );
 
-export const IconDrop: React.FC<{size?: number}> = ({size}) => (
+const IconDrop: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <path d="M32 5 C38 19 51 29 51 42 A19 19 0 0 1 13 42 C13 29 26 19 32 5 Z" fill={C.red} />
-    <path d="M22 44 A10 10 0 0 0 30 53" stroke="#fff" strokeWidth={3} fill="none" strokeLinecap="round" opacity={0.7} />
   </Svg>
 );
 
-export const IconMeter: React.FC<{size?: number}> = ({size}) => (
+const IconMeter: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <rect x={18} y={4} width={28} height={44} rx={5} fill={C.blue} />
     <rect x={22} y={9} width={20} height={12} rx={2} fill={C.navy} />
-    <text x={32} y={19} textAnchor="middle" fontFamily={SERIF} fontWeight={700} fontSize={9} fill="#fff">
-      120
-    </text>
-    <circle cx={26} cy={29} r={2.4} fill="#fff" />
-    <circle cx={38} cy={29} r={2.4} fill="#fff" />
-    <rect x={29} y={48} width={6} height={8} fill="#B8C4D4" />
-    <path d="M32 55 C34 59 36 60 36 62 A4 4 0 0 1 28 62 C28 60 30 59 32 55 Z" fill={C.red} />
   </Svg>
 );
 
-export const IconGlass: React.FC<{size?: number}> = ({size}) => (
+const IconGlass: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <path d="M12 8 H52 L47 58 H17 Z" fill="#D8ECFB" stroke={C.navy} strokeWidth={3} />
     <path d="M14 30 H50 L47 58 H17 Z" fill={C.orange} />
-    <rect x={12} y={8} width={40} height={6} fill="#fff" opacity={0.5} />
   </Svg>
 );
 
-export const IconHeart: React.FC<{size?: number; color?: string}> = ({size = 90, color = C.teal}) => (
+const IconHeart: React.FC<{size?: number; color?: string}> = ({size = 90, color = C.teal}) => (
   <Svg size={size}>
-    <path
-      d="M32 57 C8 41 4 22 16 14 C24 9 30 14 32 20 C34 14 40 9 48 14 C60 22 56 41 32 57 Z"
-      fill={color}
-    />
+    <path d="M32 57 C8 41 4 22 16 14 C24 9 30 14 32 20 C34 14 40 9 48 14 C60 22 56 41 32 57 Z" fill={color} />
   </Svg>
 );
 
-export const IconRunner: React.FC<{size?: number}> = ({size}) => (
+const IconRunner: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <circle cx={38} cy={10} r={6} fill={C.teal} />
-    <path
-      d="M36 18 L28 32 L18 34 M28 32 L36 40 L32 56 M36 20 L46 28 L54 26 M28 32 L22 46 L10 50"
-      stroke={C.teal}
-      strokeWidth={5}
-      fill="none"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
+    <path d="M36 18 L28 32 L18 34 M28 32 L36 40 L32 56 M36 20 L46 28 L54 26" stroke={C.teal} strokeWidth={5} fill="none" strokeLinecap="round" />
   </Svg>
 );
 
-export const IconApple: React.FC<{size?: number}> = ({size}) => (
+const IconApple: React.FC<{size?: number}> = ({size}) => (
   <Svg size={size}>
     <circle cx={25} cy={38} r={16} fill={C.red} />
     <circle cx={39} cy={38} r={16} fill={C.red} />
     <path d="M32 24 C32 16 36 11 42 9" stroke={C.navy} strokeWidth={3} fill="none" strokeLinecap="round" />
-    <path d="M40 12 C46 8 52 12 52 17 C46 18 41 16 40 12 Z" fill={C.teal} />
   </Svg>
 );
 
-export const CheckCircle: React.FC<{size?: number}> = ({size = 52}) => (
+const CheckCircle: React.FC<{size?: number}> = ({size = 52}) => (
   <svg viewBox="0 0 64 64" width={size} height={size}>
     <circle cx={32} cy={32} r={30} fill={C.teal} />
     <path d="M18 33 L28 43 L47 22" stroke="#fff" strokeWidth={7} fill="none" strokeLinecap="round" strokeLinejoin="round" />
@@ -447,7 +406,7 @@ export const CheckCircle: React.FC<{size?: number}> = ({size = 52}) => (
 );
 
 /* -------------------------------------------------------------------------- */
-/*  Scene 1: Intro  (12 s)                                                    */
+/*  Scene 1: Intro (Arabic)                                                   */
 /* -------------------------------------------------------------------------- */
 
 const IntroScene: React.FC = () => {
@@ -457,7 +416,7 @@ const IntroScene: React.FC = () => {
 
   return (
     <AbsoluteFill>
-      <Title text="Prediabetes: Are You at Risk?" />
+      <Title text="مرض السكري الكامن: هل أنت في خطر؟" />
       <svg width={WIDTH} height={HEIGHT} style={{position: 'absolute', left: 0, top: 0}}>
         {Array.from({length: 20}, (_, i) => {
           const c = i % cols;
@@ -475,15 +434,8 @@ const IntroScene: React.FC = () => {
               {isFlag && badge > 0 && (
                 <g transform={`translate(${x + 26} ${y - 54}) scale(${badge})`}>
                   <circle r={17} fill={C.orange} stroke="#fff" strokeWidth={3} />
-                  <text
-                    y={7}
-                    textAnchor="middle"
-                    fontFamily={SERIF}
-                    fontWeight={700}
-                    fontSize={22}
-                    fill="#fff"
-                  >
-                    ?
+                  <text y={7} textAnchor="middle" fontFamily={ARABIC_FONT} fontWeight={700} fontSize={22} fill="#fff">
+                    ؟
                   </text>
                 </g>
               )}
@@ -492,65 +444,64 @@ const IntroScene: React.FC = () => {
         })}
       </svg>
 
-      <div style={{position: 'absolute', left: 1000, top: 200, width: 860, fontFamily: SERIF}}>
+      <div style={{position: 'absolute', left: 950, top: 200, width: 900, fontFamily: ARABIC_FONT, direction: 'rtl'}}>
         <div
           style={{
-            fontSize: 180,
+            fontSize: 150,
             fontWeight: 700,
             lineHeight: 1,
-            whiteSpace: 'nowrap',
             color: C.red,
             opacity: prog(f, 135, 24),
             transform: `scale(${0.88 + 0.12 * prog(f, 135, 24)})`,
-            transformOrigin: 'left center',
+            transformOrigin: 'right center',
           }}
         >
-          1 in 10
+          1 من كل 10
         </div>
         <div
           style={{
-            fontSize: 56,
+            fontSize: 50,
             fontWeight: 700,
-            lineHeight: 1.15,
+            lineHeight: 1.2,
             color: C.navy,
             marginTop: 8,
             ...fadeUp(prog(f, 160, 24)),
           }}
         >
-          adults worldwide have prediabetes
+          بالغ حول العالم يعانون من مقدمات السكري
         </div>
-        <div style={{fontSize: 38, color: C.gray, marginTop: 14, ...fadeUp(prog(f, 190, 24))}}>
-          That’s over 500 million people
+        <div style={{fontSize: 36, color: C.gray, marginTop: 14, ...fadeUp(prog(f, 190, 24))}}>
+          هذا يمثل أكثر من 500 مليون شخص
         </div>
         <div
           style={{
-            fontSize: 48,
+            fontSize: 44,
             fontWeight: 700,
             color: C.orange,
             marginTop: 22,
             ...fadeUp(prog(f, 245, 24)),
           }}
         >
-          Most don’t know they have it
+          معظم المصابين لايدركون ذلك
         </div>
         <div
           style={{
-            fontSize: 48,
+            fontSize: 44,
             fontWeight: 700,
             color: C.teal,
             marginTop: 12,
             ...fadeUp(prog(f, 300, 24)),
           }}
         >
-          Often no symptoms
+          وغالباً لا توجد أعراض واضحة
         </div>
       </div>
 
       <Caption
         items={[
-          {from: 8, text: 'Imagine a condition affecting hundreds of millions of adults.'},
-          {from: 128, text: 'About 1 in 10 adults worldwide has prediabetes.'},
-          {from: 242, text: 'Most don’t know it, and there are often no symptoms.'},
+          {from: 8, text: 'تخيل حالة صحية تؤثر على مئات الملايين من البالغين.'},
+          {from: 128, text: 'حوالي واحد من كل عشرة بالغين حول العالم يعانون من مقدمات السكري.'},
+          {from: 242, text: 'معظمهم لا يعرفون ذلك، وغالباً لا توجد أي أعراض.'},
         ]}
       />
     </AbsoluteFill>
@@ -558,7 +509,7 @@ const IntroScene: React.FC = () => {
 };
 
 /* -------------------------------------------------------------------------- */
-/*  Scene 2: What is prediabetes? HbA1C gauge  (14 s)                         */
+/*  Scene 2: Gauge (Arabic)                                                   */
 /* -------------------------------------------------------------------------- */
 
 const GaugeScene: React.FC = () => {
@@ -581,17 +532,17 @@ const GaugeScene: React.FC = () => {
   );
   const tip = polar(cx, cy, 265, needleAngle);
   const needleOpacity = prog(f, 100, 12);
-
   const labelOpacity = prog(f, 75, 24);
+
   const legend = [
-    {color: C.teal, text: 'Below 5.7%', x: 500, start: 170},
+    {color: C.teal, text: 'أقل من 5.7%', x: 460, start: 170},
     {color: C.orange, text: '5.7% – 6.4%', x: 860, start: 290},
-    {color: C.red, text: '6.5% or higher', x: 1260, start: 410},
+    {color: C.red, text: '6.5% فأكثر', x: 1260, start: 410},
   ];
 
   return (
     <AbsoluteFill>
-      <Title text="What Is Prediabetes?" />
+      <Title text="ما هي مقدمات السكري؟" />
       <svg width={WIDTH} height={HEIGHT} style={{position: 'absolute', left: 0, top: 0}}>
         {segs.map((s, i) => (
           <path
@@ -606,28 +557,14 @@ const GaugeScene: React.FC = () => {
           />
         ))}
 
-        <g opacity={labelOpacity} fontFamily={SERIF} fontWeight={700} fontSize={38} fill={C.navy}>
-          <text x={cx - R - 80} y={cy - 150} textAnchor="end">
-            Normal
-          </text>
-          <text x={cx} y={cy - R - 62} textAnchor="middle">
-            Prediabetes
-          </text>
-          <text x={cx + R + 80} y={cy - 150} textAnchor="start">
-            Diabetes
-          </text>
+        <g opacity={labelOpacity} fontFamily={ARABIC_FONT} fontWeight={700} fontSize={36} fill={C.navy}>
+          <text x={cx - R - 60} y={cy - 150} textAnchor="end">طبيعي</text>
+          <text x={cx} y={cy - R - 62} textAnchor="middle">مقدمات السكري</text>
+          <text x={cx + R + 60} y={cy - 150} textAnchor="start">مرض السكري</text>
         </g>
 
         <g opacity={needleOpacity}>
-          <line
-            x1={cx}
-            y1={cy}
-            x2={tip.x}
-            y2={tip.y}
-            stroke={C.navy}
-            strokeWidth={9}
-            strokeLinecap="round"
-          />
+          <line x1={cx} y1={cy} x2={tip.x} y2={tip.y} stroke={C.navy} strokeWidth={9} strokeLinecap="round" />
           <circle cx={cx} cy={cy} r={21} fill="#3A5A8C" />
         </g>
 
@@ -635,30 +572,21 @@ const GaugeScene: React.FC = () => {
           x={cx}
           y={cy + 100}
           textAnchor="middle"
-          fontFamily={SERIF}
+          fontFamily={ARABIC_FONT}
           fontWeight={700}
-          fontSize={44}
+          fontSize={40}
           fill={C.navy}
-          letterSpacing={1}
           opacity={labelOpacity}
         >
-          BLOOD SUGAR (HbA1C)
+          فحص السكر التراكمي (HbA1C)
         </text>
 
         <g opacity={prog(f, 88, 24)} transform="translate(250 600)">
           <g transform="translate(-55 -80) scale(1.7)">
             <IconDrop size={64} />
           </g>
-          <text
-            x={0}
-            y={110}
-            textAnchor="middle"
-            fontFamily={SERIF}
-            fontWeight={700}
-            fontSize={32}
-            fill={C.navy}
-          >
-            HbA1C blood test
+          <text x={0} y={110} textAnchor="middle" fontFamily={ARABIC_FONT} fontWeight={700} fontSize={32} fill={C.navy}>
+            تحليل الدم التراكمي
           </text>
         </g>
 
@@ -667,14 +595,7 @@ const GaugeScene: React.FC = () => {
           return (
             <g key={i} opacity={p} transform={`translate(${l.x} ${790 + (1 - p) * 14})`}>
               <circle cx={0} cy={-10} r={13} fill={l.color} />
-              <text
-                x={26}
-                y={0}
-                fontFamily={SERIF}
-                fontWeight={700}
-                fontSize={34}
-                fill={C.navy}
-              >
+              <text x={26} y={0} fontFamily={ARABIC_FONT} fontWeight={700} fontSize={32} fill={C.navy}>
                 {l.text}
               </text>
             </g>
@@ -683,10 +604,10 @@ const GaugeScene: React.FC = () => {
       </svg>
       <Caption
         items={[
-          {from: 8, text: 'Prediabetes is higher-than-normal blood sugar, but not yet diabetes.'},
-          {from: 157, text: 'The HbA1C blood test shows where you stand.'},
-          {from: 268, text: '5.7% to 6.4% is prediabetes.'},
-          {from: 395, text: 'And 6.5% or higher is diabetes.'},
+          {from: 8, text: 'مقدمات السكري تعني أن سكر الدم أعلى من الطبيعي، ولكنه ليس في مستوى السكري بعد.'},
+          {from: 157, text: 'اختبار السكر التراكمي يوضح وضعك الصحي.'},
+          {from: 268, text: 'نسبة من 5.7 إلى 6.4 بالمائة تعني مقدمات السكري.'},
+          {from: 395, text: 'بينما 6.5 بالمائة أو أعلى تعني الإصابة بالسكري.'},
         ]}
       />
     </AbsoluteFill>
@@ -694,17 +615,15 @@ const GaugeScene: React.FC = () => {
 };
 
 /* -------------------------------------------------------------------------- */
-/*  Scene 3: What goes wrong inside the body (insulin key + cell lock)        */
+/*  Scene 3: Body / Insulin (Arabic)                                          */
 /* -------------------------------------------------------------------------- */
 
-export const Lock: React.FC<{x: number; y: number; color: string; open: number}> = ({x, y, color, open}) => (
+const Lock: React.FC<{x: number; y: number; color: string; open: number}> = ({x, y, color, open}) => (
   <g transform={`translate(${x} ${y}) scale(1.5)`}>
     <g transform={`translate(0 ${-open * 9}) rotate(${-open * 22} 10 -12)`}>
       <path d="M -10 -4 V -14 a 10 10 0 0 1 20 0 V -4" fill="none" stroke={color} strokeWidth={6} strokeLinecap="round" />
     </g>
     <rect x={-20} y={-6} width={40} height={34} rx={8} fill={color} stroke="#fff" strokeWidth={3} />
-    <circle cx={0} cy={9} r={4.5} fill="#fff" />
-    <rect x={-2} y={10} width={4} height={10} rx={2} fill="#fff" />
   </g>
 );
 
@@ -717,16 +636,8 @@ const Key: React.FC<{x: number; y: number; rot: number; fill: string; opacity: n
 }) => (
   <g transform={`translate(${x} ${y}) rotate(${rot})`} opacity={opacity}>
     <rect x={-65} y={-23} width={130} height={46} rx={23} fill={fill} />
-    <text
-      x={0}
-      y={9}
-      textAnchor="middle"
-      fontFamily={SERIF}
-      fontWeight={700}
-      fontSize={26}
-      fill="#fff"
-    >
-      insulin
+    <text x={0} y={9} textAnchor="middle" fontFamily={ARABIC_FONT} fontWeight={700} fontSize={24} fill="#fff">
+      أنسولين
     </text>
   </g>
 );
@@ -736,13 +647,17 @@ const BodyScene: React.FC = () => {
   const OFF = 940;
   const doorY = 525;
   const cellX = 520;
-
   const panelIn = prog(f, 10, 24);
 
-  /* healthy panel */
   const healthyKeyT = prog(f, 90, 40);
   const healthyOpen = prog(f, 132, 18);
   const healthyLockColor = interpolateColors(healthyOpen, [0, 1], ['#9FB3CC', C.teal]);
+
+  const resKeyT = prog(f, 215, 40);
+  const resReject = prog(f, 266, 26);
+  const resLockColor = interpolateColors(prog(f, 262, 14), [0, 1], ['#9FB3CC', C.red]);
+  const xPop = pop(f, 266);
+
   const targets: Array<[number, number]> = [
     [610, 470],
     [700, 455],
@@ -750,12 +665,6 @@ const BodyScene: React.FC = () => {
     [650, 545],
     [740, 555],
   ];
-
-  /* resistant panel */
-  const resKeyT = prog(f, 215, 40);
-  const resReject = prog(f, 266, 26);
-  const resLockColor = interpolateColors(prog(f, 262, 14), [0, 1], ['#9FB3CC', C.red]);
-  const xPop = pop(f, 266);
 
   const dotPos = (i: number, off: number, healthy: boolean) => {
     const sx = 250 + off;
@@ -795,71 +704,35 @@ const BodyScene: React.FC = () => {
 
   return (
     <AbsoluteFill>
-      <Title text="What Goes Wrong Inside the Body" />
+      <Title text="ماذا يحدث داخل الجسم؟" />
       <svg width={WIDTH} height={HEIGHT} style={{position: 'absolute', left: 0, top: 0}}>
         <g opacity={panelIn}>
-          {/* titles */}
-          <text x={535} y={285} textAnchor="middle" fontFamily={SERIF} fontWeight={700} fontSize={52} fill={C.teal}>
-            Healthy
+          <text x={535} y={285} textAnchor="middle" fontFamily={ARABIC_FONT} fontWeight={700} fontSize={48} fill={C.teal}>
+            حالة طبيعية
           </text>
-          <text x={1475} y={285} textAnchor="middle" fontFamily={SERIF} fontWeight={700} fontSize={48} fill={C.red}>
-            Cells stop responding
+          <text x={1475} y={285} textAnchor="middle" fontFamily={ARABIC_FONT} fontWeight={700} fontSize={44} fill={C.red}>
+            الخلايا تتوقف عن الاستجابة
           </text>
 
-          {/* cells */}
-          <rect
-            x={cellX}
-            y={410}
-            width={300}
-            height={230}
-            rx={30}
-            fill={interpolateColors(prog(f, 200, 60), [0, 1], ['#FFFFFF', '#DDF6F3'])}
-            stroke={C.teal}
-            strokeWidth={5}
-          />
+          <rect x={cellX} y={410} width={300} height={230} rx={30} fill="#FFFFFF" stroke={C.teal} strokeWidth={5} />
           <rect x={cellX + OFF} y={410} width={300} height={230} rx={30} fill="#fff" stroke={C.red} strokeWidth={5} />
-          <text x={cellX + 150} y={622} textAnchor="middle" fontFamily={SERIF} fontWeight={700} fontSize={30} fill={C.navy}>
-            Cell
-          </text>
-          <text x={cellX + OFF + 150} y={622} textAnchor="middle" fontFamily={SERIF} fontWeight={700} fontSize={30} fill={C.navy}>
-            Cell
-          </text>
+          <text x={cellX + 150} y={622} textAnchor="middle" fontFamily={ARABIC_FONT} fontWeight={700} fontSize={30} fill={C.navy}>خلية</text>
+          <text x={cellX + OFF + 150} y={622} textAnchor="middle" fontFamily={ARABIC_FONT} fontWeight={700} fontSize={30} fill={C.navy}>خلية</text>
 
-          {/* sugar labels */}
-          <text x={250} y={690} textAnchor="middle" fontFamily={SERIF} fontSize={26} fill={C.gray}>
-            sugar
-          </text>
-          <text x={250 + OFF} y={690} textAnchor="middle" fontFamily={SERIF} fontSize={26} fill={C.gray}>
-            sugar
-          </text>
+          <text x={250} y={690} textAnchor="middle" fontFamily={ARABIC_FONT} fontSize={24} fill={C.gray}>سكر الدم</text>
+          <text x={250 + OFF} y={690} textAnchor="middle" fontFamily={ARABIC_FONT} fontSize={24} fill={C.gray}>سكر الدم</text>
         </g>
 
-        {/* locks */}
         <Lock x={cellX} y={doorY - 14} color={healthyLockColor} open={healthyOpen} />
         <Lock x={cellX + OFF} y={doorY - 14} color={resLockColor} open={0} />
 
-        {/* keys */}
-        <Key
-          x={lerp(300, 440, healthyKeyT)}
-          y={lerp(345, doorY, healthyKeyT)}
-          rot={lerp(-28, 0, healthyKeyT)}
-          fill={C.blue}
-          opacity={prog(f, 70, 16)}
-        />
-        <Key
-          x={lerp(1240, 1380, resKeyT) - 85 * resReject}
-          y={lerp(345, doorY, resKeyT) + 34 * resReject}
-          rot={lerp(-28, 0, resKeyT) + 20 * resReject}
-          fill={interpolateColors(resReject, [0, 1], [C.blue, '#A9B7C9'])}
-          opacity={prog(f, 195, 16) * (1 - 0.4 * resReject)}
-        />
+        <Key x={lerp(300, 440, healthyKeyT)} y={lerp(345, doorY, healthyKeyT)} rot={lerp(-28, 0, healthyKeyT)} fill={C.blue} opacity={prog(f, 70, 16)} />
+        <Key x={lerp(1240, 1380, resKeyT) - 85 * resReject} y={lerp(345, doorY, resKeyT) + 34 * resReject} rot={lerp(-28, 0, resKeyT) + 20 * resReject} fill={C.blue} opacity={prog(f, 195, 16) * (1 - 0.4 * resReject)} />
 
-        {/* red X on the closed door */}
         <g transform={`translate(${cellX + OFF - 52} ${doorY - 6}) scale(${xPop})`}>
           <path d="M -22 -22 L 22 22 M 22 -22 L -22 22" stroke={C.red} strokeWidth={9} strokeLinecap="round" />
         </g>
 
-        {/* sugar dots */}
         {[0, 1, 2, 3, 4].map((i) => {
           const a = dotPos(i, 0, true);
           const b = dotPos(i, OFF, false);
@@ -872,46 +745,24 @@ const BodyScene: React.FC = () => {
           );
         })}
 
-        {/* rising blood sugar arrow */}
         <g opacity={arrowP}>
           <line x1={1105} y1={640} x2={1105} y2={640 - 220 * arrowP + 28} stroke={C.red} strokeWidth={9} strokeLinecap="round" />
-          <polygon
-            points={`1105,${640 - 220 * arrowP} 1083,${640 - 220 * arrowP + 38} 1127,${640 - 220 * arrowP + 38}`}
-            fill={C.red}
-          />
+          <polygon points={`1105,${640 - 220 * arrowP} 1083,${640 - 220 * arrowP + 38} 1127,${640 - 220 * arrowP + 38}`} fill={C.red} />
         </g>
 
-        <text
-          x={535}
-          y={745}
-          textAnchor="middle"
-          fontFamily={SERIF}
-          fontWeight={700}
-          fontSize={36}
-          fill={C.teal}
-          opacity={prog(f, 235, 24)}
-        >
-          Sugar enters the cells
+        <text x={535} y={745} textAnchor="middle" fontFamily={ARABIC_FONT} fontWeight={700} fontSize={34} fill={C.teal} opacity={prog(f, 235, 24)}>
+          السكر يدخل الخلايا
         </text>
-        <text
-          x={1475}
-          y={745}
-          textAnchor="middle"
-          fontFamily={SERIF}
-          fontWeight={700}
-          fontSize={36}
-          fill={C.red}
-          opacity={prog(f, 350, 24)}
-        >
-          Sugar stays in the blood
+        <text x={1475} y={745} textAnchor="middle" fontFamily={ARABIC_FONT} fontWeight={700} fontSize={34} fill={C.red} opacity={prog(f, 350, 24)}>
+          السكر يتراكم في الدم
         </text>
       </svg>
       <Caption
         items={[
-          {from: 8, text: 'So what’s happening inside the body?'},
-          {from: 88, text: 'Normally, insulin is a key that lets sugar into your cells.'},
-          {from: 210, text: 'But sometimes your cells stop responding to it.'},
-          {from: 307, text: 'So sugar stays in your blood, and blood sugar rises.'},
+          {from: 8, text: 'إذن، ما الذي يحدث داخل الجسم؟'},
+          {from: 88, text: 'في الحالة الطبيعية، الأنسولين هو المفتاح الذي يسمح للسكر بالدخول إلى خلاياك.'},
+          {from: 210, text: 'ولكن في بعض الأحيان تتوقف الخلايا عن الاستجابة له.'},
+          {from: 307, text: 'لذلك يبقى السكر في الدم، وترتفع نسبة السكر.'},
         ]}
       />
     </AbsoluteFill>
@@ -919,7 +770,7 @@ const BodyScene: React.FC = () => {
 };
 
 /* -------------------------------------------------------------------------- */
-/*  Scene 4: What raises your risk? (all risk factors in ONE sequence, 30 s)  */
+/*  Scene 4: Risks (Arabic)                                                   */
 /* -------------------------------------------------------------------------- */
 
 type RiskItem = {icon: React.ReactNode; label: string; desc: string; start: number};
@@ -940,12 +791,13 @@ const RiskCard: React.FC<{item: RiskItem}> = ({item}) => {
         borderRadius: 22,
         opacity: Math.min(1, p * 1.6),
         transform: `scale(${0.88 + 0.12 * Math.min(1.05, p)}) translateY(${(1 - Math.min(1, p)) * 18}px)`,
+        direction: 'rtl',
       }}
     >
       <div style={{width: 72, height: 72, flexShrink: 0}}>{item.icon}</div>
-      <div style={{fontFamily: SERIF, minWidth: 0}}>
-        <div style={{fontSize: 30, fontWeight: 700, color: C.navy, lineHeight: 1.15}}>{item.label}</div>
-        <div style={{fontSize: 21, color: C.gray, marginTop: 4, lineHeight: 1.2}}>{item.desc}</div>
+      <div style={{fontFamily: ARABIC_FONT, minWidth: 0, textAlign: 'right'}}>
+        <div style={{fontSize: 28, fontWeight: 700, color: C.navy, lineHeight: 1.15}}>{item.label}</div>
+        <div style={{fontSize: 19, color: C.gray, marginTop: 4, lineHeight: 1.2}}>{item.desc}</div>
       </div>
     </div>
   );
@@ -963,10 +815,10 @@ const RiskColumn: React.FC<{
     <div style={{width: 570, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
       <div
         style={{
-          fontFamily: SERIF,
+          fontFamily: ARABIC_FONT,
           fontWeight: 700,
-          fontSize: 24,
-          letterSpacing: 1.5,
+          fontSize: 22,
+          letterSpacing: 1,
           color: '#fff',
           backgroundColor: color,
           padding: '9px 28px',
@@ -980,16 +832,7 @@ const RiskColumn: React.FC<{
       >
         {pill}
       </div>
-      <div
-        style={{
-          marginTop: 18,
-          width: '100%',
-          height: 520,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 12,
-        }}
-      >
+      <div style={{marginTop: 18, width: '100%', height: 520, display: 'flex', flexDirection: 'column', gap: 12}}>
         {items.map((it) => (
           <RiskCard key={it.label} item={it} />
         ))}
@@ -1002,22 +845,22 @@ const RisksScene: React.FC = () => {
   const f = useCurrentFrame();
 
   const fixed: RiskItem[] = [
-    {icon: <IconAge />, label: 'Getting older', desc: 'Risk rises, especially after 35–45', start: 22},
-    {icon: <IconFamily />, label: 'Family history', desc: 'Parent or sibling with type 2 diabetes', start: 60},
-    {icon: <IconGlobe />, label: 'Family background', desc: 'Some backgrounds have higher rates', start: 98},
+    {icon: <IconAge />, label: 'تقدم العمر', desc: 'يزداد الخطر خاصة بعد سن 35-45', start: 22},
+    {icon: <IconFamily />, label: 'التاريخ العائلي', desc: 'وجود إصابة سابقة لدى أحد الوالدين أو الإخوة', start: 60},
+    {icon: <IconGlobe />, label: 'الخلفية العرقية', desc: 'بعض المجموعات العرقية تكون أكثر عرضة', start: 98},
   ];
   const habits: RiskItem[] = [
-    {icon: <IconWeight />, label: 'Extra weight', desc: 'Especially around the belly', start: 132},
-    {icon: <IconCouch />, label: 'Not moving much', desc: 'Little regular physical activity', start: 160},
-    {icon: <IconCup />, label: 'Sugary diet', desc: 'Lots of sugary drinks and snacks', start: 188},
-    {icon: <IconSmoke />, label: 'Smoking', desc: 'Raises the risk of type 2 diabetes', start: 216},
-    {icon: <IconMoon />, label: 'Poor sleep', desc: 'Too little or broken sleep', start: 244},
+    {icon: <IconWeight />, label: 'الوزن الزائد', desc: 'خاصة تراكم الدهون حول البطن', start: 132},
+    {icon: <IconCouch />, label: 'قلة الحركة', desc: 'انعدام النشاط البدني المنتظم', start: 160},
+    {icon: <IconCup />, label: 'النظام الغذائي', desc: 'الإكثار من المشروبات والأطعمة السكرية', start: 188},
+    {icon: <IconSmoke />, label: 'التدخين', desc: 'يزيد من خطر الإصابة بالسكري', start: 216},
+    {icon: <IconMoon />, label: 'اضطرابات النوم', desc: 'قلة النوم أو النوم غير المنتظم', start: 244},
   ];
   const conditions: RiskItem[] = [
-    {icon: <IconBP />, label: 'High blood pressure', desc: 'Often 130/80 or higher', start: 246},
-    {icon: <IconCholesterol />, label: 'Unhealthy cholesterol', desc: 'Too little good, or too much bad', start: 272},
-    {icon: <IconVenus />, label: 'PCOS', desc: 'A common hormone condition in women', start: 298},
-    {icon: <IconPregnancy />, label: 'High blood sugar', desc: 'During a past pregnancy', start: 324},
+    {icon: <IconBP />, label: 'ارتفاع ضغط الدم', desc: 'غالباً 130/80 أو أعلى', start: 246},
+    {icon: <IconCholesterol />, label: 'اضطراب الكوليسترول', desc: 'ارتفاع الدهون الضارة بالجسم', start: 272},
+    {icon: <IconVenus />, label: 'تكيس المبايض', desc: 'حالة هرمونية شائعة لدى النساء', start: 298},
+    {icon: <IconPregnancy />, label: 'سكر الحمل', desc: 'ارتفاع السكر خلال فترة حمل سابقة', start: 324},
   ];
 
   const meterIn = prog(f, 350, 24);
@@ -1027,99 +870,38 @@ const RisksScene: React.FC = () => {
 
   return (
     <AbsoluteFill>
-      <Title text="What Raises Your Risk?" />
+      <Title text="ما الذي يرفع احتمالية إصابتك؟" />
 
-      <div
-        style={{
-          position: 'absolute',
-          left: 70,
-          top: 128,
-          width: 1780,
-          display: 'flex',
-          justifyContent: 'space-between',
-        }}
-      >
-        <RiskColumn pill="OUT OF YOUR CONTROL" color={C.red} pillStart={14} items={fixed} />
-        <RiskColumn pill="HABITS YOU CAN CHANGE" color={C.teal} pillStart={118} items={habits} />
-        <RiskColumn pill="HEALTH CONDITIONS" color={C.blue} pillStart={232} items={conditions} />
+      <div style={{position: 'absolute', left: 70, top: 128, width: 1780, display: 'flex', justifyContent: 'space-between'}}>
+        <RiskColumn pill="عوامل خارجة عن إرادتك" color={C.red} pillStart={14} items={fixed} />
+        <RiskColumn pill="عادات يومية يمكنك تعديلها" color={C.teal} pillStart={118} items={habits} />
+        <RiskColumn pill="حالات صحية مرتبطة" color={C.blue} pillStart={232} items={conditions} />
       </div>
 
-      {/* risk meter */}
-      <div
-        style={{
-          position: 'absolute',
-          left: 460,
-          top: 752,
-          width: 1000,
-          fontFamily: SERIF,
-          opacity: meterIn,
-        }}
-      >
-        <div style={{display: 'flex', justifyContent: 'space-between', fontSize: 24, color: C.gray}}>
-          <span>Lower risk</span>
-          <span style={{fontWeight: 700, color: C.navy}}>Risk factors add up</span>
-          <span>Higher risk</span>
+      <div style={{position: 'absolute', left: 460, top: 752, width: 1000, fontFamily: ARABIC_FONT, opacity: meterIn, direction: 'rtl'}}>
+        <div style={{display: 'flex', justifyContent: 'space-between', fontSize: 22, color: C.gray}}>
+          <span>خطر أقل</span>
+          <span style={{fontWeight: 700, color: C.navy}}>عوامل الخطر تتراكم معاً</span>
+          <span>خطر أعلى</span>
         </div>
-        <div
-          style={{
-            position: 'relative',
-            marginTop: 10,
-            height: 22,
-            borderRadius: 11,
-            background: `linear-gradient(90deg, ${C.teal}, ${C.orange}, ${C.red})`,
-          }}
-        >
-          <div
-            style={{
-              position: 'absolute',
-              top: -8,
-              left: marker * 966,
-              width: 38,
-              height: 38,
-              borderRadius: 19,
-              backgroundColor: markerColor,
-              border: `5px solid ${C.white}`,
-              boxShadow: `0 0 0 3px ${C.navy}`,
-              boxSizing: 'border-box',
-            }}
-          />
+        <div style={{position: 'relative', marginTop: 10, height: 22, borderRadius: 11, background: `linear-gradient(90deg, ${C.teal}, ${C.orange}, ${C.red})`}}>
+          <div style={{position: 'absolute', top: -8, left: marker * 966, width: 38, height: 38, borderRadius: 19, backgroundColor: markerColor, border: `5px solid ${C.white}`}} />
         </div>
       </div>
 
-      <div
-        style={{
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          top: 846,
-          display: 'flex',
-          justifyContent: 'center',
-          ...fadeUp(bannerP),
-        }}
-      >
-        <div
-          style={{
-            fontFamily: SERIF,
-            fontWeight: 700,
-            fontSize: 34,
-            color: C.navy,
-            backgroundColor: '#FDE9C9',
-            border: `3px solid ${C.orange}`,
-            borderRadius: 16,
-            padding: '8px 34px',
-          }}
-        >
-          High risk = a warning, not a diagnosis
+      <div style={{position: 'absolute', left: 0, right: 0, top: 846, display: 'flex', justifyContent: 'center', ...fadeUp(bannerP)}}>
+        <div style={{fontFamily: ARABIC_FONT, fontWeight: 700, fontSize: 32, color: C.navy, backgroundColor: '#FDE9C9', border: `3px solid ${C.orange}`, borderRadius: 16, padding: '8px 34px', direction: 'rtl'}}>
+          الخطر المرتفع هو مجرد إنذار، وليس تشخيصاً نهائياً
         </div>
       </div>
 
       <Caption
         items={[
-          {from: 8, text: 'Some risk factors are out of your control.'},
-          {from: 125, text: 'Others come from daily habits, and you can change these.'},
-          {from: 240, text: 'Certain health conditions also raise your risk.'},
-          {from: 345, text: 'More risk factors mean a higher chance of prediabetes and type 2 diabetes.'},
-          {from: 508, text: 'But high risk is a warning, not a diagnosis.'},
+          {from: 8, text: 'بعض عوامل الخطر خارجة عن إرادتك.'},
+          {from: 125, text: 'والبعض الآخر ينتج عن عادات يومية يمكنك تغييرها.'},
+          {from: 240, text: 'كما أن بعض الحالات الصحية تزيد من خطورة الإصابة.'},
+          {from: 345, text: 'زيادة عوامل الخطر تعني فرصة أكبر للإصابة بمقدمات السكري والسكري من النوع الثاني.'},
+          {from: 508, text: 'لكن الخطر المرتفع هو مجرد إنذار وليس تشخيصاً نهائياً.'},
         ]}
       />
     </AbsoluteFill>
@@ -1127,7 +909,7 @@ const RisksScene: React.FC = () => {
 };
 
 /* -------------------------------------------------------------------------- */
-/*  Scene 5: How do you find out?  (20 s)                                     */
+/*  Scene 5: Tests (Arabic)                                                   */
 /* -------------------------------------------------------------------------- */
 
 type TestCard = {
@@ -1151,19 +933,17 @@ const RangeBox: React.FC<{label: string; value: string; color: string; tint: str
       width: '100%',
       boxSizing: 'border-box',
       backgroundColor: tint,
-      borderLeft: `8px solid ${color}`,
+      borderRight: `8px solid ${color}`,
       borderRadius: 14,
       padding: '10px 20px 12px',
       opacity: p,
-      transform: `translateX(${(1 - p) * -16}px)`,
+      transform: `translateX(${(1 - p) * 16}px)`,
+      direction: 'rtl',
+      textAlign: 'right',
     }}
   >
-    <div style={{fontSize: 20, fontWeight: 700, letterSpacing: 1.5, color, textTransform: 'uppercase'}}>
-      {label}
-    </div>
-    <div style={{fontSize: 36, fontWeight: 700, color: C.navy, marginTop: 2, whiteSpace: 'nowrap'}}>
-      {value}
-    </div>
+    <div style={{fontSize: 20, fontWeight: 700, letterSpacing: 1, color, textTransform: 'uppercase'}}>{label}</div>
+    <div style={{fontSize: 34, fontWeight: 700, color: C.navy, marginTop: 2, whiteSpace: 'nowrap'}}>{value}</div>
   </div>
 );
 
@@ -1172,26 +952,26 @@ const TestsScene: React.FC = () => {
 
   const cards: TestCard[] = [
     {
-      name: 'HbA1C Test',
-      desc: 'Average blood sugar over 2–3 months',
-      normal: 'Below 5.7%',
+      name: 'فحص السكر التراكمي',
+      desc: 'يقيس متوسط سكر الدم خلال آخر شهرين إلى ثلاثة أشهر',
+      normal: 'أقل من 5.7%',
       pre: '5.7% – 6.4%',
       icon: <IconDrop size={110} />,
       start: 8,
     },
     {
-      name: 'Fasting Glucose',
-      desc: 'Blood sugar after not eating overnight',
-      normal: 'Below 100 mg/dL',
-      pre: '100 – 125 mg/dL',
+      name: 'فحص السكر الصائم',
+      desc: 'يقيس مستوى السكر بعد الامتناع عن الأكل طوال الليل',
+      normal: 'أقل من 100 مغ/دل',
+      pre: '100 – 125 مغ/دل',
       icon: <IconMeter size={110} />,
       start: 160,
     },
     {
-      name: 'Glucose Tolerance',
-      desc: 'Blood sugar before and 2 hours after a sugary drink',
-      normal: 'Below 140 mg/dL',
-      pre: '140 – 199 mg/dL',
+      name: 'اختبار تحمل الجلوكوز',
+      desc: 'يقيس سكر الدم بعد ساعتين من تناول مشروب محلى',
+      normal: 'أقل من 140 مغ/دل',
+      pre: '140 – 199 مغ/دل',
       icon: <IconGlass size={110} />,
       start: 268,
     },
@@ -1199,18 +979,8 @@ const TestsScene: React.FC = () => {
 
   return (
     <AbsoluteFill>
-      <Title text="How Do You Find Out?" />
-      <div
-        style={{
-          position: 'absolute',
-          left: 115,
-          top: 190,
-          width: 1690,
-          display: 'flex',
-          justifyContent: 'space-between',
-          fontFamily: SERIF,
-        }}
-      >
+      <Title text="كيف تتأكد من إصابتك؟" />
+      <div style={{position: 'absolute', left: 115, top: 190, width: 1690, display: 'flex', justifyContent: 'space-between', fontFamily: ARABIC_FONT}}>
         {cards.map((c) => {
           const p = pop(f, c.start);
           const r1 = prog(f, c.start + 36, 24);
@@ -1231,26 +1001,17 @@ const TestsScene: React.FC = () => {
                 alignItems: 'center',
                 opacity: Math.min(1, p * 1.6),
                 transform: `scale(${0.9 + 0.1 * Math.min(1.05, p)}) translateY(${(1 - Math.min(1, p)) * 24}px)`,
+                direction: 'rtl',
               }}
             >
               <div style={{height: 112, display: 'flex', alignItems: 'center'}}>{c.icon}</div>
-              <div style={{fontSize: 40, fontWeight: 700, color: C.navy, marginTop: 10}}>{c.name}</div>
-              <div
-                style={{
-                  fontSize: 21,
-                  lineHeight: 1.3,
-                  color: C.gray,
-                  textAlign: 'center',
-                  marginTop: 8,
-                  height: 56,
-                  padding: '0 6px',
-                }}
-              >
+              <div style={{fontSize: 38, fontWeight: 700, color: C.navy, marginTop: 10}}>{c.name}</div>
+              <div style={{fontSize: 20, lineHeight: 1.3, color: C.gray, textAlign: 'center', marginTop: 8, height: 56, padding: '0 6px'}}>
                 {c.desc}
               </div>
               <div style={{width: '100%', marginTop: 22, display: 'flex', flexDirection: 'column', gap: 16}}>
-                <RangeBox label="Normal" value={c.normal} color={C.teal} tint="#E3F8F5" p={r1} />
-                <RangeBox label="Prediabetes" value={c.pre} color={C.orange} tint="#FFF1DA" p={r2} />
+                <RangeBox label="طبيعي" value={c.normal} color={C.teal} tint="#E3F8F5" p={r1} />
+                <RangeBox label="مقدمات السكري" value={c.pre} color={C.orange} tint="#FFF1DA" p={r2} />
               </div>
             </div>
           );
@@ -1258,10 +1019,10 @@ const TestsScene: React.FC = () => {
       </div>
       <Caption
         items={[
-          {from: 8, text: 'The HbA1C shows your average blood sugar over two to three months.'},
-          {from: 160, text: 'A fasting test checks it after not eating overnight.'},
-          {from: 268, text: 'A glucose tolerance test checks it after a sugary drink.'},
-          {from: 382, text: 'If you have risk factors, ask your doctor about testing.'},
+          {from: 8, text: 'يوضح اختبار السكر التراكمي متوسط سكر الدم لديك على مدى شهرين إلى ثلاثة أشهر.'},
+          {from: 160, text: 'فحص السكر الصائم يتحقق منه بعد عدم الأكل طوال الليل.'},
+          {from: 268, text: 'اختبار تحمل الجلوكوز يتحقق منه بعد تناول مشروب محلى.'},
+          {from: 382, text: 'إذا كانت لديك عوامل خطر، فاستشر طبيبك بشأن الفحص.'},
         ]}
       />
     </AbsoluteFill>
@@ -1269,7 +1030,7 @@ const TestsScene: React.FC = () => {
 };
 
 /* -------------------------------------------------------------------------- */
-/*  Scene 6: The good news  (14 s)                                            */
+/*  Scene 6: Good News (Arabic)                                               */
 /* -------------------------------------------------------------------------- */
 
 const GoodScene: React.FC = () => {
@@ -1279,46 +1040,31 @@ const GoodScene: React.FC = () => {
   const beat = 1 + Math.sin(f / 7) * 0.03;
 
   const actions = [
-    {icon: <IconWeight size={64} />, text: 'Lose 5–7% of your body weight', start: 190},
-    {icon: <IconRunner size={64} />, text: '150 minutes of activity a week', start: 276},
-    {icon: <IconApple size={64} />, text: 'Eat more whole foods', start: 352},
+    {icon: <IconWeight size={64} />, text: 'اخسر 5 إلى 7 بالمائة من وزن جسمك', start: 190},
+    {icon: <IconRunner size={64} />, text: 'مارس الرياضة 150 دقيقة أسبوعياً', start: 276},
+    {icon: <IconApple size={64} />, text: 'تناول المزيد من الأطعمة الكاملة', start: 352},
   ];
 
   return (
     <AbsoluteFill>
-      <Title text="The Good News: You Can Lower Your Risk" color={C.teal} />
+      <Title text="البشرى: يمكنك تقليل مخاطر إصابتك" color={C.teal} />
 
-      <div style={{position: 'absolute', left: 110, top: 140, width: 820, fontFamily: SERIF}}>
-        <div style={{transform: `scale(${Math.max(0, heart) * beat})`, transformOrigin: 'left center'}}>
+      <div style={{position: 'absolute', left: 110, top: 140, width: 820, fontFamily: ARABIC_FONT, direction: 'rtl'}}>
+        <div style={{transform: `scale(${Math.max(0, heart) * beat})`, transformOrigin: 'right center'}}>
           <IconHeart size={120} />
         </div>
-        <div style={{fontSize: 270, fontWeight: 700, lineHeight: 1, color: C.teal, marginTop: 6}}>
+        <div style={{fontSize: 250, fontWeight: 700, lineHeight: 1, color: C.teal, marginTop: 6}}>
           {pct}%
         </div>
-        <div style={{fontSize: 44, fontWeight: 700, color: C.navy, lineHeight: 1.2, marginTop: 10, ...fadeUp(prog(f, 90, 24))}}>
-          lower risk of type 2 diabetes
-          <br />
-          with lifestyle changes
+        <div style={{fontSize: 42, fontWeight: 700, color: C.navy, lineHeight: 1.3, marginTop: 10, ...fadeUp(prog(f, 90, 24))}}>
+          انخفاض خطر الإصابة بالسكري من النوع الثاني عبر تغيير نمط الحياة
         </div>
-        <div style={{fontSize: 24, color: C.gray, marginTop: 14, lineHeight: 1.3, ...fadeUp(prog(f, 110, 24))}}>
-          Major clinical trial (Diabetes Prevention Program),
-          <br />
-          over about 3 years
+        <div style={{fontSize: 22, color: C.gray, marginTop: 14, ...fadeUp(prog(f, 110, 24))}}>
+          نتائج دراسة سريرية واسعة النطاق (برنامج الوقاية من السكري)
         </div>
       </div>
 
-      <div
-        style={{
-          position: 'absolute',
-          left: 960,
-          top: 290,
-          width: 880,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 30,
-          fontFamily: SERIF,
-        }}
-      >
+      <div style={{position: 'absolute', left: 960, top: 290, width: 880, display: 'flex', flexDirection: 'column', gap: 30, fontFamily: ARABIC_FONT}}>
         {actions.map((a) => {
           const p = pop(f, a.start);
           return (
@@ -1334,11 +1080,12 @@ const GoodScene: React.FC = () => {
                 borderRadius: 24,
                 boxShadow: '0 4px 14px rgba(27,58,107,0.08)',
                 opacity: Math.min(1, p * 1.6),
-                transform: `translateX(${(1 - Math.min(1, p)) * 60}px)`,
+                transform: `translateX(${(1 - Math.min(1, p)) * -60}px)`,
+                direction: 'rtl',
               }}
             >
               <div style={{width: 64, height: 64}}>{a.icon}</div>
-              <div style={{fontSize: 34, fontWeight: 700, color: C.navy, whiteSpace: 'nowrap'}}>{a.text}</div>
+              <div style={{fontSize: 32, fontWeight: 700, color: C.navy, whiteSpace: 'nowrap'}}>{a.text}</div>
             </div>
           );
         })}
@@ -1346,10 +1093,10 @@ const GoodScene: React.FC = () => {
 
       <Caption
         items={[
-          {from: 8, text: 'Lifestyle changes cut the risk of type 2 diabetes by 58% in a major trial.'},
-          {from: 190, text: 'Lose 5–7% of your weight.'},
-          {from: 276, text: 'Move 150 minutes a week.'},
-          {from: 352, text: 'Eat more whole foods.'},
+          {from: 8, text: 'تغييرات نمط الحياة تخفض خطر الإصابة بالسكري من النوع الثاني بنسبة 58 بالمائة في تجربة رئيسية.'},
+          {from: 190, text: 'افقد 5 إلى 7 بالمائة من وزن جسمك.'},
+          {from: 276, text: 'مارس الرياضة لمدة 150 دقيقة أسبوعياً.'},
+          {from: 352, text: 'تناول المزيد من الأطعمة الكاملة.'},
         ]}
       />
     </AbsoluteFill>
@@ -1357,23 +1104,23 @@ const GoodScene: React.FC = () => {
 };
 
 /* -------------------------------------------------------------------------- */
-/*  Scene 7: Take action + purpose + references  (14 s)                       */
+/*  Scene 7: Closing (Arabic)                                                 */
 /* -------------------------------------------------------------------------- */
 
 const CloseScene: React.FC = () => {
   const f = useCurrentFrame();
   const items = [
-    'Learn your risk factors',
-    'Talk to your doctor about a blood test',
-    'Move more, eat well, sleep well',
-    'Small steps now protect your health',
+    'تعرف على عوامل الخطر الخاصة بك',
+    'استشر طبيبك بشأن إجراء فحص الدم',
+    'تحرك أكثر، وتناول طعاماً صحياً، ونم جيداً',
+    'الخطوات اليومية الصغيرة تحمي صحتك لسنوات',
   ];
 
   return (
     <AbsoluteFill>
-      <Title text="Take Action Today" />
+      <Title text="ابدأ باتخاذ خطوة اليوم" />
 
-      <div style={{position: 'absolute', left: 260, top: 150, fontFamily: SERIF}}>
+      <div style={{position: 'absolute', right: 260, top: 150, fontFamily: ARABIC_FONT, direction: 'rtl'}}>
         {items.map((t, i) => {
           const p = pop(f, [14, 62, 145, 185][i]);
           return (
@@ -1385,11 +1132,11 @@ const CloseScene: React.FC = () => {
                 gap: 26,
                 height: 78,
                 opacity: Math.min(1, p * 1.6),
-                transform: `translateX(${(1 - Math.min(1, p)) * -40}px)`,
+                transform: `translateX(${(1 - Math.min(1, p)) * 40}px)`,
               }}
             >
               <CheckCircle size={52} />
-              <div style={{fontSize: 44, fontWeight: 700, color: C.navy}}>{t}</div>
+              <div style={{fontSize: 40, fontWeight: 700, color: C.navy}}>{t}</div>
             </div>
           );
         })}
@@ -1402,17 +1149,19 @@ const CloseScene: React.FC = () => {
           width: 1520,
           top: 490,
           boxSizing: 'border-box',
-          fontFamily: SERIF,
+          fontFamily: ARABIC_FONT,
           backgroundColor: C.white,
           border: `3px solid ${C.teal}`,
           borderRadius: 24,
           padding: '22px 40px',
+          direction: 'rtl',
+          textAlign: 'right',
           ...fadeUp(prog(f, 232, 26)),
         }}
       >
-        <div style={{fontSize: 22, fontWeight: 700, letterSpacing: 2, color: C.teal}}>WHY WE MADE THIS VIDEO</div>
-        <div style={{fontSize: 36, color: C.navy, lineHeight: 1.3, marginTop: 6}}>
-          To spread community awareness and educate people about prediabetes.
+        <div style={{fontSize: 20, fontWeight: 700, letterSpacing: 1, color: C.teal}}>الهدف من هذا الفيديو</div>
+        <div style={{fontSize: 34, color: C.navy, lineHeight: 1.3, marginTop: 6}}>
+          نشر الوعي المجتمعي وتثقيف الأفراد حول مقدمات السكري وطرق الوقاية منها.
         </div>
       </div>
 
@@ -1423,29 +1172,31 @@ const CloseScene: React.FC = () => {
           width: 1520,
           top: 690,
           boxSizing: 'border-box',
-          fontFamily: SERIF,
+          fontFamily: ARABIC_FONT,
           backgroundColor: 'rgba(255,255,255,0.9)',
           border: `2px solid ${C.line}`,
           borderRadius: 24,
           padding: '20px 40px',
+          direction: 'rtl',
+          textAlign: 'right',
           ...fadeUp(prog(f, 300, 26)),
         }}
       >
-        <div style={{fontSize: 22, fontWeight: 700, letterSpacing: 2, color: C.gray}}>REFERENCES</div>
-        <div style={{fontSize: 28, color: C.navy, lineHeight: 1.4, marginTop: 6}}>
-          American Diabetes Association (ADA) – Standards of Care in Diabetes
+        <div style={{fontSize: 20, fontWeight: 700, letterSpacing: 1, color: C.gray}}>المراجع العلمية</div>
+        <div style={{fontSize: 26, color: C.navy, lineHeight: 1.4, marginTop: 6}}>
+          الجمعية الأمريكية للسكري (ADA) – معايير الرعاية الطبية للسكري
         </div>
-        <div style={{fontSize: 28, color: C.navy, lineHeight: 1.4}}>
-          Centers for Disease Control and Prevention (CDC) – Prediabetes Guidelines
+        <div style={{fontSize: 26, color: C.navy, lineHeight: 1.4}}>
+          مراكز السيطرة على الأمراض والوقاية منها (CDC) – إرشادات الوقاية من مقدمات السكري
         </div>
       </div>
 
       <Caption
         items={[
-          {from: 8, text: 'Learn your risk factors. Talk to your doctor about a blood test.'},
-          {from: 140, text: 'Move more, eat well, and sleep well.'},
-          {from: 232, text: 'Our goal is to spread community awareness and educate people about prediabetes.'},
-          {from: 390, text: 'This video is for education, not medical advice.'},
+          {from: 8, text: 'تعرف على عوامل الخطر الخاصة بك. وتحدث إلى طبيبك حول إجراء فحص الدم.'},
+          {from: 140, text: 'تحرك أكثر، وتناول طعاماً صحياً، وكن منتظماً في النوم.'},
+          {from: 232, text: 'هدفنا هو نشر الوعي المجتمعي وتثقيف الناس حول مقدمات السكري.'},
+          {from: 390, text: 'هذا الفيديو للأغراض التعليمية فقط وليس نصيحة طبية.'},
         ]}
       />
     </AbsoluteFill>
@@ -1453,7 +1204,7 @@ const CloseScene: React.FC = () => {
 };
 
 /* -------------------------------------------------------------------------- */
-/*  Main composition                                                          */
+/*  Main Composition                                                          */
 /* -------------------------------------------------------------------------- */
 
 export const ExplainerVideo: React.FC = () => {
